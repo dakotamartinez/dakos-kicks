@@ -5,7 +5,7 @@ const Router = require('./src/router/router.js');
 const app = express();
 
 app.use(bodyParser.json());
-app.use('/', new Router({ app }).route());
+app.use('/v1', new Router({ app }).route());
 
 app.use((req, res, next) => {
   const url = req.originalUrl;
