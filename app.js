@@ -12,7 +12,7 @@ app.use((req, res, next) => {
   const body = req.body;
   const params = req.params;
 
-  console.error('Not found', { err, url, body, params });
+  console.error('Not found', { url, body, params });
 
   const statusCode = 404;
   const message = 'Not found';
