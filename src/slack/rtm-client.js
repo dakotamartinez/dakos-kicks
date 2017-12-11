@@ -50,7 +50,11 @@ class RTMClient extends EventEmitter {
         user: data.user,
         timestamp: data.ts,
         text: data.text,
-      })
+      });
+
+      if (data.username === 'adidas-carts') {
+        this.emit('cart', data);
+      }
     }
   }
 

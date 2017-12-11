@@ -20,6 +20,20 @@ class SlackWebClient {
     return this;
   }
 
+  asBot() {
+    this._wasBot = this._wasBot || !!this.isBot;
+    this.isBot = true;
+
+    return this;
+  }
+
+  endAsBot() {
+    this.isBot = this._wasBot;
+    this._wasBot = undefined;
+
+    return this;
+  }
+
   async callMethod(method, options = {}) {
     const defaultOpts = {};
 
@@ -78,6 +92,20 @@ class SlackWebClient {
     }
 
     return result.channels;
+  }
+
+
+  async getChannelInfo(channel) {
+    const opts = { channel: channel.id };
+
+    const result = await this.callMethod('channels.info', opts);
+
+    return result;
+  }
+
+
+  async getChannelMembers(channel) {
+    const opts = { channel: channel.id }
   }
 
 }

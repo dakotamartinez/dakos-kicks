@@ -1,0 +1,112 @@
+<link rel="import" href="../../components/polymer/polymer-element.html">
+<link rel="import" href="../../components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../components/iron-icons/iron-icons.html">
+<link rel="import" href="../../components/paper-icon-button/paper-icon-button.html">
+
+
+<dom-module id="dk-table">
+  <template>
+    <style>
+      table {
+        border-collapse: collapse;
+        position: relative;
+      }
+
+      .item {
+        position: relative;
+      }
+
+      .item > td {
+        cursor: pointer;
+        border-bottom: 1px solid #ccc;
+      }
+
+      /* td.overlay {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        background-color: black;
+      } */
+
+      .item:hover {
+        background-color: #ccc;
+      }
+    </style>
+
+    <!-- CHANGE URL BACK AS APPROPRIATE -->
+
+    <iron-ajax
+      auto
+      id="ajax"
+      url="/v1/carts"
+      last-response="{{data}}">
+    </iron-ajax>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Region</th>
+          <th>SKU</th>
+          <th>Size</th>
+          <th>Time</th>
+          <th>Price</th>
+          <th>Claim</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template
+          id="rows"
+          is="dom-repeat"
+          items="[[data]]"
+          as="cart">
+          <tr class="item" on-click="_onItemClicked">
+            <td>[[cart.region]]</td>
+            <td>[[cart.sku]]</td>
+            <td>[[cart.size]]</td>
+            <td>[[cart.time]]</td>
+            <td>[[cart.price]]</td>
+            <td>
+              <paper-icon-button icon="credit-card">
+              </paper-icon-button>
+              <paper-ripple></paper-ripple>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+
+  </template>
+
+  <script>
+
+    /**
+     * @customElement
+     * @polymer
+     */
+    class DkTable extends Polymer.Element {
+      static get is() { return 'dk-table'; }
+
+      static get properties() {
+        return {
+          data: {
+            type: Object,
+            observer: '_dataChanged',
+          },
+        }
+      }
+
+      _dataChanged(value) {
+        console.log('data', value);
+      }
+
+      _onItemClicked(e) {
+        console.log(e);
+      }
+    }
+
+    window.customElements.define(DkTable.is, DkTable);
+  </script>
+</dom-module>

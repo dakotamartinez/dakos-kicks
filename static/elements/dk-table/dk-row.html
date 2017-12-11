@@ -1,0 +1,55 @@
+<link rel="import" href="../../components/polymer/polymer-element.html">
+<link rel="import" href="../../components/iron-icons/iron-icons.html">
+<link rel="import" href="../../components/paper-icon-button/paper-icon-button.html">
+
+
+<dom-module id="dk-row">
+  <template>
+    <style>
+      :host() {
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+      }
+
+      :host(:hover) {
+        background-color: #eee;
+      }
+    </style>
+      <tr on-click="_onItemClicked">
+        <td>[[item.region]]</td>
+        <td>[[item.sku]]</td>
+        <td>[[item.size]]</td>
+        <td>[[item.time]]</td>
+        <td>[[item.price]]</td>
+        <td>
+          <paper-icon-button icon="credit-card">
+        </paper-icon-button>
+        </td>
+      </tr>
+  </template>
+
+  <script>
+
+    /**
+     * @customElement
+     * @polymer
+     */
+    class DkRow extends Polymer.Element {
+      static get is() { return 'dk-row'; }
+
+      static get properties() {
+        return {
+          item: {
+            type: Object,
+          },
+        }
+      }
+
+      _onItemClicked(e) {
+        console.log(e);
+      }
+    }
+
+    window.customElements.define(DkRow.is, DkRow);
+  </script>
+</dom-module>

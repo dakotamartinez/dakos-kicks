@@ -14,8 +14,20 @@ client
 
     return channel;
   })
-  .then(result => console.log('RESULT', result))
-  .catch(err => console.error('ERROR', err))
+  .then(channel => {
+    console.log('channel result', channel);
+    return channel;
+  })
+  .catch(err => console.error('channel lookup error', err))
+
+  .then(channel => client
+      .asBot()
+      .getChannelInfo(channel))
+  .then(result => {
+    client.endAsBot();
+    console.log('channel info', result);
+  })
+  .catch(err => console.error('channel info error', err))
 
 // client.fetchAuthCode('bot')
 //   .then(result => console.log('RESULT', result))

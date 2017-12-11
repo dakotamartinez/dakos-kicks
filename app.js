@@ -7,6 +7,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use('/v1', new Router({ app }).route());
 
+app.use('/assets', express.static('static', { index: ['index.html'] }));
+
 app.use((req, res, next) => {
   const url = req.originalUrl;
   const body = req.body;

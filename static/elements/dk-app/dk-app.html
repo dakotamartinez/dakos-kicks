@@ -1,0 +1,30 @@
+<link rel="import" href="../../components/polymer/polymer-element.html">
+<link rel="import" href="../dk-table/dk-table.html">
+
+
+
+<dom-module id="dk-app">
+  <template>
+    <style>
+    </style>
+
+    <dk-table id="table"></dk-table>
+
+  </template>
+
+  <script>
+
+    /**
+     * @customElement
+     * @polymer
+     */
+    class DkApp extends Polymer.Element {
+      static get is() { return 'dk-app'; }
+
+      static get properties() {
+      }
+    }
+
+    window.customElements.define(DkApp.is, DkApp);
+  </script>
+</dom-module>
