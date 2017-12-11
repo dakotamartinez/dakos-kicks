@@ -1,10 +1,10 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const router = require('./src/router/router.js');
+const Router = require('./src/router/router.js');
 
 const app = express();
 
-app.use(bodyparser.json());
+app.use(bodyParser.json());
 app.use('/', new Router({ app }).route());
 
 app.use((req, res, next) => {
