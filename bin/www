@@ -5,6 +5,7 @@ require('dotenv').config({
   path: path.resolve(__dirname, '..', '.env'),
 });
 
+const Cart = require('../src/cart/cart');
 const app = require('../app');
 const http = require('http');
 
@@ -12,9 +13,15 @@ const server = http.createServer(app);
 const hostname = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;
 
-server.listen(port, hostname, () => {
-  console.log(`
-    API Listening on:
-    http://${hostname}:${port}
-  `);
-});
+
+this.db.createDb(this.db.db)
+  .then(() => this.db.createTable(Cart))
+  .then(() => {
+    server.listen(port, hostname, () => {
+      console.log(`
+        API Listening on:
+        http://${hostname}:${port}
+      `);
+    });
+  })
+
