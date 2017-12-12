@@ -6,6 +6,7 @@ require('dotenv').config({
 });
 
 const Cart = require('../src/cart/cart');
+const db = require('../src/db/db');
 const app = require('../app');
 const http = require('http');
 
@@ -14,8 +15,8 @@ const hostname = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;
 
 
-this.db.createDb(this.db.db)
-  .then(() => this.db.createTable(Cart))
+db.createDb(process.env.DB_NAME)
+  .then(() => db.createTable(Cart))
   .then(() => {
     server.listen(port, hostname, () => {
       console.log(`
