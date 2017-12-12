@@ -1,30 +1,42 @@
 #!/usr/bin/env node
 
+console.log('Loading environment...');
 const path = require('path');
 require('dotenv').config({
   path: path.resolve(__dirname, '..', '.env'),
 });
 
+console.log('Loading dependencies');
 const Cart = require('../src/cart/cart');
 const db = require('../src/db/db');
 const app = require('../app');
 const http = require('http');
 
+console.log('initializing server');
 const server = http.createServer(app);
 const hostname = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;
+console.log('HOSTNAME', hostname);
+console.log('PORT', port);
 
-
+console.log('initializing database', process.env.DB_NAME);
 db.createDb(process.env.DB_NAME)
-  .catch(() => {})
+  .catch(err => {
+    console.error('error creating database', err);
+  })
   .then(() => db.createTable(Cart))
-  .catch(() => {})
+  .catch(err => {
+    console.error('error creating table');
+  })
   .then(() => {
     server.listen(port, hostname, () => {
-      console.log(`
+      console.error(`
         API Listening on:
         http://${hostname}:${port}
       `);
     });
+  })
+  .catch(err => {
+    console.error('Error starting server', err);
   })
 
