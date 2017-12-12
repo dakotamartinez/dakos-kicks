@@ -16,7 +16,9 @@ const port = process.env.PORT || 3000;
 
 
 db.createDb(process.env.DB_NAME)
+  .catch(() => {})
   .then(() => db.createTable(Cart))
+  .catch(() => {})
   .then(() => {
     server.listen(port, hostname, () => {
       console.log(`
