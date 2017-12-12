@@ -1,4 +1,4 @@
-const Db = require('../db/db');
+const db = require('../db/db');
 const EventEmitter = require('events').EventEmitter;
 const { URL } = require('url');
 
@@ -21,6 +21,10 @@ class Cart extends EventEmitter {
       size: 'string',
       region: 'string',
       imageUrl: 'string',
+      url: 'string',
+      token: 'object',
+      checkout: 'object',
+      _deleted: 'string',
     }
   }
 
@@ -28,8 +32,16 @@ class Cart extends EventEmitter {
     return 'carts';
   }
 
-  static get db() {
-    return Db.connect();
+  get description() {
+    return `Account login Size: ${this.size}`
+  }
+
+  get url() {
+    const message = this.message || {};
+    const attachments = message.attachments || [];
+    const attachment = attachments[0] || {};
+
+    return attachment.title_link;
   }
 
   async updatePayload() {
@@ -47,8 +59,6 @@ class Cart extends EventEmitter {
   }
 
   async save() {
-    const db = this.constructor.db;
-
     if (this.id == null) {
       return this.saveNew();
     }
@@ -58,7 +68,6 @@ class Cart extends EventEmitter {
   
 
   async saveNew() {
-    const db = this.constructor.db;
     const result = await db.insert(this);
 
     if (result.inserted !== 1) {
@@ -93,18 +102,42 @@ class Cart extends EventEmitter {
 
 
   static async findAll() {
-    const results = await this.db.fetchAll(this);
-
+    const results = await db.fetchAll(this);
     return results;
   }
 
+
+  static async findById(id) {
+    const data = await db.findById(this, id);
+    const cart = Array.isArray(data) ? data[0] : data;
+
+    if (cart) {
+      return new this(cart);
+    }
+
+    return null;
+  }
+
+
   toJSON() {
-    const props = Array.from(new Set([ 'id', 'sku', 'size', 'region', 'price' ]
+    const props = Array.from(new Set([
+      'id',
+      'sku',
+      'size',
+      'region',
+      'price',
+      'currency',
+      'description',
+      '_deleted',
+    ]
       .concat(this._withProps)));
 
     const defaultValues = {
       sku: process.env.APP_DEFAULT_SKU,
       price: process.env.APP_DEFAULT_PRICE,
+      currency: process.env.APP_DEFAULT_CURRENCY,
+      description: this.description,
+      _deleted: false,
     }
 
     const values = props.reduce((prev, next) => {
@@ -118,8 +151,8 @@ class Cart extends EventEmitter {
 
       return prev;
     }, {});
-
-    console.log(values);
+    
+    values.price = parseInt(values.price, 10);
 
     return values;
   }

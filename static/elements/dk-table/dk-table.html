@@ -1,4 +1,4 @@
-<link rel="import" href="../../components/polymer/polymer-element.html">
+<link rel="import" href="../dk-base/dk-base.html">
 <link rel="import" href="../../components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../components/iron-icons/iron-icons.html">
 <link rel="import" href="../../components/paper-icon-button/paper-icon-button.html">
@@ -10,6 +10,11 @@
       table {
         border-collapse: collapse;
         position: relative;
+        width: 100%;
+      }
+
+      td,th {
+        text-align: center;
       }
 
       .item {
@@ -20,16 +25,6 @@
         cursor: pointer;
         border-bottom: 1px solid #ccc;
       }
-
-      /* td.overlay {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-
-        background-color: black;
-      } */
 
       .item:hover {
         background-color: #ccc;
@@ -58,16 +53,15 @@
       </thead>
       <tbody>
         <template
-          id="rows"
+          id="products"
           is="dom-repeat"
-          items="[[data]]"
-          as="cart">
+          items="[[data]]">
           <tr class="item" on-click="_onItemClicked">
-            <td>[[cart.region]]</td>
-            <td>[[cart.sku]]</td>
-            <td>[[cart.size]]</td>
-            <td>[[cart.time]]</td>
-            <td>[[cart.price]]</td>
+            <td>[[item.region]]</td>
+            <td>[[item.sku]]</td>
+            <td>[[item.size]]</td>
+            <td>[[item.time]]</td>
+            <td>[[_formatPrice(item.price)]]</td>
             <td>
               <paper-icon-button icon="credit-card">
               </paper-icon-button>
@@ -86,24 +80,26 @@
      * @customElement
      * @polymer
      */
-    class DkTable extends Polymer.Element {
+    class DkTable extends DkBase {
       static get is() { return 'dk-table'; }
 
-      static get properties() {
-        return {
-          data: {
-            type: Object,
-            observer: '_dataChanged',
-          },
-        }
-      }
-
-      _dataChanged(value) {
-        console.log('data', value);
-      }
-
       _onItemClicked(e) {
-        console.log(e);
+        this.emit('item-clicked', { item: e.model.item });
+      }
+
+      _formatPrice(price) {
+        const value = price / 100;
+        const formatter = Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        });
+
+        return formatter.format(value);
+      }
+
+      refresh() {
+        this.$.ajax.generateRequest();
       }
     }
 

@@ -1,14 +1,44 @@
-<link rel="import" href="../../components/polymer/polymer-element.html">
+<link rel="import" href="../dk-base/dk-base.html">
 <link rel="import" href="../dk-table/dk-table.html">
-
+<link rel="import" href="../dk-dialogs/dk-dialogs.html">
+<link rel="import" href="../dk-stripe-checkout/dk-stripe-checkout.html">
+<link rel="import" href="../../components/paper-toast/paper-toast.html">
 
 
 <dom-module id="dk-app">
   <template>
     <style>
+      hr.spacer {
+        margin: 1em;
+      }
+
+      div.warning {
+        padding: 1em;
+      }
     </style>
 
-    <dk-table id="table"></dk-table>
+    <dk-table
+      id="table"
+      on-item-clicked="_onItemClicked">
+    </dk-table>
+
+    <dk-stripe-checkout
+      id="stripe"
+      on-transaction-error="_onTransactionError"
+      on-transaction-success="_onTransactionSuccess">
+    </dk-stripe-checkout>
+
+    <paper-toast
+      opened
+      id="termsNotify"
+      text="All purchases subject to"
+      duration="0">
+      <a href="#" on-click="_onShowTerms">Terms and Conditions</a>
+      <a style="margin-left: 0.5em;" href="#" on-click="_onCloseTerms">OK</a>
+    </paper-toast>
+    <paper-toast id="warn"></paper-toast>
+    
+    <dk-dialogs id="dialogs"></dk-dialogs>
 
   </template>
 
@@ -18,10 +48,48 @@
      * @customElement
      * @polymer
      */
-    class DkApp extends Polymer.Element {
+    class DkApp extends DkBase {
       static get is() { return 'dk-app'; }
 
       static get properties() {
+        return {
+          cartUrl: {
+            type: String,
+          },
+          cartEmail: {
+            type: String,
+          },
+          cartPassword: {
+            type: String,
+          },
+        }
+      }
+      
+      _onItemClicked(event, detail) {
+        const { item } = detail;
+        this.$.stripe.createCheckout(item);
+      }
+
+      _onShowTerms() {}
+
+
+      _onCloseTerms() {
+        this.$.termsNotify.close();
+      }
+
+
+      _onTransactionError(event, err) {
+        this.$.warn.text = 'An error occurred processing your payment.';
+        this.$.warn.open();
+      }
+
+
+      _onTransactionSuccess(event, detail) {
+        this.$.dialogs.cartUrl = detail.url;
+        this.$.dialogs.cartEmail = detail.email;
+        this.$.dialogs.cartPassword = detail.password;
+        this.$.table.refresh();
+        this.$.dialogs.$.confirm.open();
       }
     }
 

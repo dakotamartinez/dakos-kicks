@@ -329,4 +329,4 @@ class Db extends EventEmitter {
 
 }
 
-module.exports = Db;
+module.exports = Db.connect();

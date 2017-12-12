@@ -1,0 +1,156 @@
+<link rel="import" href="../dk-base/dk-base.html">
+<link rel="import" href="../../components/iron-ajax/iron-request.html">
+
+<script src="https://checkout.stripe.com/checkout.js"></script>
+
+
+<dom-module id="dk-stripe-checkout">
+  <template>
+    <iron-request id="xhr"></iron-request>
+  </template>
+
+  <script>
+
+    /**
+     * @customElement
+     * @polymer
+     */
+    class DkStripeCheckout extends DkBase {
+      static get is() { return 'dk-stripe-checkout'; }
+      
+      static get properties() {
+        return {
+          publishableKey: {
+            type: String,
+            value: 'pk_test_wqGbpPzY5zrbWIYsNyrCTuk9',
+          },
+
+          storeImage: {
+            type: String,
+            // value: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+            value: 'http://dakos-kicks.com/stripe-1.png',
+          },
+
+          locale: {
+            type: String,
+            value: 'auto',
+          },
+
+          checkoutHandler: {
+            type: Object,
+          },
+
+          checkoutLock: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true,
+          },
+
+          item: {
+            type: Object,
+          },
+        }
+      }
+
+      
+      connectedCallback() {
+        super.connectedCallback();
+        Polymer.RenderStatus.beforeNextRender(this, () => {
+          this.initCheckout();
+        });
+      }
+
+
+      onCheckoutOpened() {
+        console.log('checkout opened');
+        this.checkoutLock = true;
+      }
+
+
+      onCheckoutClosed() {
+        console.log('checkout closed');
+        this.checkoutLock = false;
+      }
+
+
+      initCheckout() {
+        console.log('creating checkout handler');
+
+        this.checkoutHandler = StripeCheckout.configure({
+          key: this.publishableKey,
+          image: this.storeImage,
+          locale: this.locale,
+          token: (token, args) => this.handleToken(token, args)
+        });
+      }
+
+
+      createCheckout(item) {
+        console.log('start checkout', item);
+
+        if (this.checkoutLock) {
+          console.log('checkout is locked');
+          return;
+        }
+
+        this.item = item;
+
+        this.checkoutHandler.open({
+          name: 'Dako\'s Kicks',
+          description: item.description,
+          amount: item.price,
+          zipCode: true,
+          billingAddress: false,
+          currency: item.currency,
+          opened: this.onCheckoutOpened,
+          closed: this.onCheckoutClosed,
+        });
+      }
+
+
+      createCharge(item, token) {
+        console.log('sending checkout request', { token, item });
+        return new Promise((resolve, reject) => {
+          const req = this.$.xhr.send({
+            url: '/api/v1/checkout',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: { token, item },
+            handleAs: 'json',
+          })
+
+          req
+            .then(req => this.handleChargeCreated(req))
+            .catch(err => {
+              console.log('transaction error');
+              this.emit('transaction-error', err);
+            });
+        });
+      }
+
+
+      handleChargeCreated(xhr) {
+        const body = xhr.parseResponse instanceof Function
+        ? xhr.parseResponse()
+        : null;
+
+        if (!body) {
+          return this.emit('transaction-error');
+        }
+
+        this.emit('transaction-success', body);
+      }
+
+
+      handleToken(token) {
+        console.log('token received', token);
+        return this.createCharge(this.item, token);
+      }
+    }
+
+    window.customElements.define(DkStripeCheckout.is, DkStripeCheckout);
+  </script>
+</dom-module>

@@ -5,7 +5,7 @@ const Router = require('./src/router/router.js');
 const app = express();
 
 app.use(bodyParser.json());
-app.use('/v1', new Router({ app }).route());
+app.use(/(\/api)?\/v1/, new Router({ app }).route());
 
 app.use('/assets', express.static('static', { index: ['index.html'] }));
 

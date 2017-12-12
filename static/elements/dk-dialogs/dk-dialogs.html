@@ -1,0 +1,90 @@
+<link rel="import" href="../dk-base/dk-base.html">
+<link rel="import" href="../../components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../components/paper-button/paper-button.html">
+<link rel="import" href="../../components/paper-dialog-behavior/paper-dialog-shared-styles.html">
+
+
+<dom-module id="dk-dialogs">
+  <template>
+    <style include="paper-dialog-shared-styles">
+      .dialog-content {
+        padding: 1em;
+      }
+
+      h2 {
+        margin-left: 1em;
+        margin-right: 1em;
+      }
+
+      hr.spacer {
+        margin: 1em;
+      }
+
+      div.warning {
+        padding: 1em;
+      }
+
+      div.buttons {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: flex-end;
+      }
+    </style>
+
+    <paper-dialog
+      id="confirm"
+      no-cancel-on-esc-key
+      no-cancel-on-outside-click
+      with-backdrop
+      position-target="[[target]]">
+      <h2>Thank you for your purchase.</h2>
+      <div class="dialog-content">
+        <dl>
+          <dt>Cart Link</dt>
+          <dd><a href="[[cartUrl]]" target="_blank">Click Here</a></dd>
+          <dt>Email</dt>
+          <dd>[[cartEmail]]</dd>
+          <dt>Password</dt>
+          <dd>[[cartPassword]]</dd>
+        </dl>
+        <hr class="spacer">
+        <div class="warning">
+          Please store this information safely.  After closing this dialog,
+          you will not be able to see this again.
+        </div>
+      </div>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Close This Dialog</paper-button>
+      </div>
+    </paper-dialog>
+
+  </template>
+
+  <script>
+
+    /**
+     * @customElement
+     * @polymer
+     */
+    class DkDialogs extends DkBase {
+      static get is() { return 'dk-dialogs'; }
+
+      static get properties() {
+        return {
+          cartUrl: {
+            type: String,
+          },
+          cartEmail: {
+            type: String,
+          },
+          cartPassword: {
+            type: String,
+          },
+        }
+      }
+    }
+
+    window.customElements.define(DkDialogs.is, DkDialogs);
+  </script>
+</dom-module>

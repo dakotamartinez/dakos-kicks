@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-const app = require('../app');
-const http = require('http');
 const path = require('path');
 require('dotenv').config({
   path: path.resolve(__dirname, '..', '.env'),
 });
+
+const app = require('../app');
+const http = require('http');
 
 const server = http.createServer(app);
 const hostname = process.env.HOST || '0.0.0.0';

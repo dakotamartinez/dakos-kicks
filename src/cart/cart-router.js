@@ -1,7 +1,7 @@
 const express = require('express');
 const Cart = require('../cart/cart');
 
-class Router {
+class CartRouter {
 
   constructor(options) {
     this.options = options;
@@ -9,7 +9,6 @@ class Router {
   }
 
   route() {
-    // add some smooth routing stuff here
 
     this.router.get('/', async (req, res, next) => {
       const result = await Cart.findAll();
@@ -21,4 +20,4 @@ class Router {
 }
 
 
-module.exports = Router;
+module.exports = CartRouter;
