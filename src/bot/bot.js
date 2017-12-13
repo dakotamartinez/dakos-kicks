@@ -1,5 +1,5 @@
 const Cart = require('../cart/cart');
-const Db = require('../db/db');
+const db = require('../db/db');
 const EventEmitter = require('events').EventEmitter;
 const RTMClient = require('../slack/rtm-client');
 const WebClient = require('../slack/web-client');
@@ -11,7 +11,6 @@ class Bot extends EventEmitter {
 
     this.rtmClient = new RTMClient();
     this.webClient = new WebClient();
-    this.db = Db.connect();
 
     this.ready = false;
     this.init();
@@ -30,8 +29,8 @@ class Bot extends EventEmitter {
   init() {
     return this.rtmClient.connect()
       .then(() => this.attachListeners())
-      .then(() => this.db.createDb(this.db.db))
-      .then(() => this.db.createTable(Cart))
+      .then(() => db.createDb(db.db))
+      .then(() => db.createTable(Cart))
       .then(() => {
         this.ready = true;
         this.emit('ready')

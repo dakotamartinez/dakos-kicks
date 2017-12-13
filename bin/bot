@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+require('dotenv').config();
+
+const Bot = require('../src/bot/bot');
+
+console.log('loading bot...');
+const bot = new Bot();
+
+bot.waitUntilReady()
+  .then(() => {
+    console.log('bot is ready.');
+  })
+  .catch(err => {
+    console.error('Bot encountered an error', err);
+  });
+
