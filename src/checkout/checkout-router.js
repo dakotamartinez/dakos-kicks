@@ -24,8 +24,6 @@ class CheckoutRouter {
         const success = true;
         const payload = { success, id, email, password, url };
 
-        console.log('charge successful');
-        
         res.status(200).json(payload);
         
       } catch(err) {
