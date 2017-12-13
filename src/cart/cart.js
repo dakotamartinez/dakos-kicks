@@ -44,6 +44,16 @@ class Cart extends EventEmitter {
     return attachment.title_link;
   }
 
+  set url(value) {
+    const message = this.message || {};
+    const attachments = message.attachments || [];
+    const attachment = attachments[0] || {};
+
+    if (attachment.title_link == null) {
+      attachment.title_link = value;
+    }
+  }
+
   async updatePayload() {
     const record = await db.findById(this);
     const result = Object.keys(this.constructor.properties)
