@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+require('dotenv').config();
+
+const db = require('../src/db/db');
+const Cart = require('../src/cart/cart');
+
+console.log('truncating cart table...');
+
+db.truncate(Cart)
+  .then(() => {
+    console.log('done.');
+  })
+  .catch(err => {
+    console.error('Error truncating', err);
+  });
+
