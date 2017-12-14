@@ -8,9 +8,8 @@ const Cart = require('../src/cart/cart');
 console.log('truncating cart table...');
 
 db.truncate(Cart)
-  .then(() => {
-    console.log('done.');
-  })
+  .then(() => db.close())
+  .then(() => console.log('done.'))
   .catch(err => {
     console.error('Error truncating', err);
   });
