@@ -326,6 +326,24 @@ class Db extends EventEmitter {
         })
     })
   }
+  
+  
+  async truncate(nameOrClass) {
+    const conn = await this.waitForConnection();
+    const tableName = this.constructor.resolveTableName(nameOrClass);
+
+    return new Promise((resolve, reject) => {
+      r.table(tableName)
+        .delete()
+        .run(conn, (err, result) => {
+          if (!err) {
+            return resolve(result);
+          }
+
+          return reject(err);
+        })
+    })
+  }
 
 }
 

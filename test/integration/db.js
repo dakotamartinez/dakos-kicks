@@ -12,7 +12,7 @@ const records = [
 ]
 
 db.waitForConnection()
-  .then(() => db.createTable('butts'))
+  .then(() => db.createTable('thing'))
   .then(result => {
     if (result) {
       console.log(result)
@@ -20,31 +20,31 @@ db.waitForConnection()
   })
   .catch(err => console.log('create table error', err))
   
-  .then(() => db.insert('butts', records))
+  .then(() => db.insert('thing', records))
   .then(result => console.log(result))
   .catch(err => console.log('insert error', err))
 
-  .then(() => db.fetchAll('butts'))
+  .then(() => db.fetchAll('thing'))
   .then(result => (result
     .sort((a, b) => (Math.random() > 0.5 ? -1 : 1))
     .slice(0, Math.ceil(Math.random() * 3))
     .map(item => item.id)))
   .catch(err => console.log('fetchAll error', err))
 
-  .then(ids => db.findById('butts', ids))
+  .then(ids => db.findById('thing', ids))
   .then(result => {
     console.log('result', result);
     return result[0];
   })
   .catch(err => console.log('findById error', err))
 
-  .then(item => db.update('butts', item.id, { foo: 'bar' })
-    .then(() => db.findById('butts', item.id))
+  .then(item => db.update('thing', item.id, { foo: 'bar' })
+    .then(() => db.findById('thing', item.id))
     .then(result => console.log('updated result', result))
     .catch(err => console.log('update error', err))
-    .then(() => db.delete('butts', item.id))
+    .then(() => db.delete('thing', item.id))
     .catch(err => console.log('delete error', err))
-    .then(() => db.findById('butts', item.id))
+    .then(() => db.findById('thing', item.id))
     .then(result => console.log('deleted result', result)))
 
 // db.connect()
