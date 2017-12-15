@@ -102,7 +102,6 @@ class Cart extends EventEmitter {
     payload.email = text.match(/mailto:([^|]*)\|/)[1];
     payload.password = text.match(/Password: (.*)/)[1];
     payload.size = title.match(/Size: (.*)/)[1];
-    payload.region = url.locale;
     payload.imageUrl = thumb_url;
 
     const target = new this(payload);
@@ -147,6 +146,7 @@ class Cart extends EventEmitter {
       price: process.env.APP_DEFAULT_PRICE,
       currency: process.env.APP_DEFAULT_CURRENCY,
       description: this.description,
+      region: process.env.APP_DEFAULT_LOCALE,
       _deleted: false,
     }
 
